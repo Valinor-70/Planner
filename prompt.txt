@@ -1,97 +1,121 @@
-You are a senior front-end engineer building a calm, offline-first homework & life planner that you personally intend to use every day as a student.
+You are an autonomous Senior Full-Stack Engineer acting as an Agent. Your goal is to scaffold, implement, and verify a complete local-first planner app following the detailed specification. Execute this plan step-by-step.
 
-Your priorities are correctness, calm UX, accessibility, and simplicity. Avoid feature bloat. Work incrementally and commit after each meaningful step.
+Feel Free to edit the styling/ plan as you go, but do not deviate too far.
 
-STACK (MANDATORY)
+1. PROJECT INITIALIZATION & SETUP
+Action: Execute the following setup steps.
 
-* Framework: Astro
-* UI island: SolidJS
-* Styling: Tailwind CSS
-* Language: TypeScript
-* Persistence: IndexedDB (primary) with localStorage fallback
-* Dates & timezones: date-fns + date-fns-tz
-* Tests: Vitest (unit), Playwright (E2E)
-* No backend, no analytics, no cloud sync
+Initialize a new Astro project (use npm create astro@latest with the 'empty' template). Name it zenplan.
 
-PRODUCT GOAL
-Build a single-page web app that:
+Enter the directory (cd zenplan).
 
-* Lets users create homework and life tasks
-* Assigns each task a due date/time (deadline) and optional scheduled date/time (when to work on it)
-* Clearly answers: “What should I work on today?”
-* Feels calm, reliable, and non-anxious
-* Stores all data locally on the user’s device
-* Works offline after first load
-* Must have an advanced, high quality ui
+Install dependencies immediately:
 
-You are designing this as the end user, not a marketing site.
+npx astro add react (Accept all prompts).
 
-NON-GOALS
-Do NOT implement authentication, accounts, cloud sync, social features, gamification, or complex project hierarchies. Prefer less over more.
+npx astro add tailwind (Accept all prompts).
 
-DATA MODEL (DO NOT DEVIATE)
-Each task must conform to:
-{
-id: string, // uuid v4
-title: string,
-type: "homework" | "life",
-subject: string | null,
-notes: string | null,
-createdAt: string, // ISO-8601
-updatedAt: string, // ISO-8601
-dueDate: string | null,        // YYYY-MM-DD (local)
-dueTime: string | null,        // HH:mm
-scheduledDate: string | null,  // YYYY-MM-DD (local)
-scheduledTime: string | null,  // HH:mm
-timeZone: string,              // IANA tz
-estimatedMinutes: number | null,
-priority: "low" | "medium" | "high" | null,
-pomodoroCount: number,
-completed: boolean,
-completedAt: string | null,
-order: number
-}
+npm install framer-motion clsx tailwind-merge lucide-react date-fns
 
-Use meta.schemaVersion and implement migrations.
+npm install dexie @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities dexie-react-hooks
 
-UI & UX RULES
+npm install -D @types/react @types/react-dom
 
-* Single page only
-* One central column (max-width ~840px)
-* Group tasks by: Urgent/Due Soon, Today, Upcoming, Someday
-* Homework tasks surface above life tasks when due soon
-* Keyboard-first:
+2. ARCHITECTURE & FILE CREATION
+Action: Create the following folder structure and files. Write the full implementation code for each.
 
-  * N or Ctrl/Cmd+K: new task
-  * Ctrl/Cmd+Z: undo
-  * Enter: confirm
-* Motion ≤160ms, respect prefers-reduced-motion
-* No popups or blocking modals
-* Use undo instead of confirmations
+A. Database Layer (Client-Side Only)
+File: src/lib/db.ts Logic:
 
-IMPLEMENTATION ORDER (FOLLOW STRICTLY)
+Initialize Dexie with a database named ZenPlanDB.
 
-1. Scaffold Astro + Solid + Tailwind + TypeScript
-2. Implement storage layer (IndexedDB + fallback)
-3. Implement timezone-safe date utilities
-4. Build core UI: Quick Add, task list, task item
-5. Implement urgency sorting based on deadlines
-6. Implement undo stack
-7. Add minimal Pomodoro focus mode
-8. Add export/import JSON
-9. Add unit tests (storage + date utils)
-10. Add Playwright E2E tests (add, complete, undo, persist)
+Define the Task interface and export it.
 
-QUALITY BAR
+Create a store tasks with schema: ++id, title, date, status, priority.
 
-* npm run build passes
-* npm run test passes
-* No TypeScript any
-* No unused dependencies
-* No accessibility violations on main screen
-* Code should be readable by another student
+Export the typed db instance and a set of utility functions for CRUD operations (addTask, updateTask, deleteTask).
 
-If a decision trades calmness for features, choose calmness.
+B. Domain Types
+File: src/types.ts Content: Define interfaces for Task, Priority ('low'|'med'|'high'), and TaskStatus ('todo'|'done').
 
-FINAL OUTPUT
-Produce a working repository with clean commit history and a README explaining how to run the app, the data model, and the design philosophy. Do not explain theory unless asked. Build it cleanly.
+C. Components (React Islands)
+Location: src/components/planner/ Create the following interactive components:
+
+TaskCard.tsx:
+
+Props: task object, onToggleComplete.
+
+Features: Draggable (use @dnd-kit/sortable hooks).
+
+Animation: Use framer-motion's AnimatePresence and motion.div. When status changes to 'done', apply a smooth strikethrough/fade transition and a subtle completion pulse effect.
+
+UI: Glassmorphism style (bg-white/50 backdrop-blur-sm), rounded-xl.
+
+Column.tsx:
+
+Props: date (ISO string for the day), tasks (array), id (the droppable ID).
+
+Features: Droppable area (use @dnd-kit/core's useDroppable).
+
+UI: Clear visual separation for the day (e.g., "Mon 16").
+
+TaskBoard.tsx (The Controller):
+
+Logic: Use useLiveQuery from dexie-react-hooks to fetch all tasks reactively.
+
+Logic: Implement DndContext and the core onDragEnd handler.
+
+CRITICAL onDragEnd Logic: Upon drag completion, calculate the new date based on the drop column's ID and call the updateTask function from src/lib/db.ts to persist the date change.
+
+UI: Implement view switching logic between 'Daily', 'Weekly', and 'Monthly' views.
+
+NewTaskModal.tsx:
+
+UI: A functional, accessible modal with validation.
+
+Fields: Inputs for all Task schema fields, including a date picker and a segmented control for Priority selection.
+
+Logic: On submit, call addTask from src/lib/db.ts and close the modal.
+
+D. Main Page (Astro)
+File: src/pages/index.astro Logic:
+
+Set the page title and meta tags.
+
+Import TaskBoard from the components.
+
+Render the main component using the strict client directive: <TaskBoard client:only="react" />.
+
+3. UI/UX DESIGN SPECIFICATION
+Action: Apply the "Modern Soft UI" aesthetic using these Tailwind specifications.
+
+Palette: slate (Backgrounds), violet (Primary/Active), emerald (Success/Done).
+
+Glassmorphism Effect: Use bg-white/50 backdrop-blur-sm on task cards.
+
+Priority Visuals (TaskCard):
+
+High: border-rose-500
+
+Med: border-amber-500
+
+Low: border-sky-500
+
+Typography: Ensure high contrast and use font-sans throughout.
+
+4. ERROR PREVENTION PROTOCOLS (Critical Review)
+Verification: Prioritize these checks during implementation:
+
+SSR Protection: Ensure all code interacting with Dexie or window (DOM, localStorage, etc.) is isolated within client-side React hooks or components guarded by the client:only="react" directive on the Astro page.
+
+Reactivity: Confirm that the TaskBoard uses useLiveQuery so that creating, updating, or dragging a task instantly reflects in the UI without a manual refresh.
+
+Persistence Test: After implementing the onDragEnd logic, the Agent must execute a test: drag a task to a different day, refresh the browser, and confirm the task remains in the new day.
+
+5. EXECUTION & DELIVERY
+Start by running the installation commands, then proceed to create the files in the most logical order (DB first, then Types, then Components, then Astro page). Once finished, the system must be verified via the browser.
+
+NOTE FROM Project Manager:
+ *Please create a landing page, and then setup page, dashboard *
+ *The UI must be SaaS grade and Must blow us away *
+ *WHEN DONE, REEVALUTE ALL PAGES, WITH A FRESH MIND TO ENSURE COOHERANCE AND AN AMAZING PROJECT*
