@@ -1,0 +1,306 @@
+A calm, single-screen planner that blends homework management (courses, due dates, estimates) with day-to-day life tasks, gives clear “what to do now” guidance, supports small scheduling and focus sessions, keeps everything on the device, and returns users to a productive, low-stress daily workflow.
+
+2 — Key user needs (prioritised)
+
+Capture homework quickly and unambiguously (course, due date, estimate).
+
+See today’s actionable list first (homework due soon highest priority).
+
+Schedule short focus sessions (Pomodoro), and track passed sessions.
+
+Persistent local storage and simple backup/export.
+
+Gentle nudges (reminders) with no guilt — optional, unobtrusive.
+
+Keyboard-first, accessible, and respects reduced motion.
+
+3 — Core features (what I actually want to use daily)
+
+Quick Add: title + subject/course tag + optional due date + optional estimated minutes.
+
+Today view (single column): tasks grouped by Today / Upcoming / Someday, ordered by urgency.
+
+Homework detail: subject, description, attachments, estimated duration, priority, recurring rules.
+
+Auto-priority & scheduler: compute urgency score to order tasks; suggest study slots.
+
+Focus mode: start a Pomodoro (25/5 default) from any task; track counts per task.
+
+Undo stack + instant recovery after mistaken delete.
+
+Import/Export JSON, migration aware.
+
+Soft reminders (local notifications) and optional quiet chime.
+
+Offline-first: everything stored locally; no accounts.
+
+4 — UI layout (single page, compact & calm)
+
+Top area (hero strip)
+
+Small app title (left), today date large (centre-left), status (e.g., “2 urgent • 5 total”) subtle to the right.
+
+Quick Add inline in top bar with keyboard focus shortcut (Ctrl/Cmd+K or N).
+
+Main body (center column, max width 840px)
+
+Add row: Title input, Subject chip dropdown, Date picker, Time input, Estimate (mins) spinner, Add button (Enter).
+
+Primary content: grouped lists:
+
+Urgent / Due Today (deadline within 48 hours or scheduled today)
+
+Scheduled / Today (scheduled for the day)
+
+Upcoming (next 7 days)
+
+Someday (no date)
+
+Each group: header with date and a soft divider; collapsible (persist state).
+
+Task row:
+
+checkbox (complete)
+
+subject color chip and subject name
+
+title (inline edit)
+
+time chip (if present)
+
+estimate (e.g., 45m)
+
+focus (start Pomodoro) button
+
+caret to expand detail (notes, attachments, recurrence)
+
+drag handle (for manual reorder)
+
+Footer: Undo, Export, Import, Settings — compact controls.
+
+Focus mode (overlay or minimal slide-in)
+
+Minimal UI: task title, timer, pause, skip/finish. Soft screen dim; no heavy animations.
+
+Design tokens (calm)
+
+Background warm neutral, surface white with soft shadow.
+
+Subjects have soft pastel accents (not neon). Example:
+
+Math: soft slate-blue
+
+Physics: muted teal
+
+Literature: warm ochre
+
+Typography: Inter, generous line-height, readable sizes.
+
+Motion: tiny fades/slides ≤ 140ms; respects prefers-reduced-motion.
+
+5 — Data model (expanded schema for homework + life)
+{
+  "id":"uuid-v4",
+  "title":"string",
+  "type":"homework|life",
+  "subject":"string|null",            // e.g., "Math 101" or null for life tasks
+  "courseCode":"string|null",        // optional short code
+  "notes":"string|null",
+  "attachments":[{"name":"string","blobRef":"string"}],
+  "createdAt":"ISO-8601",
+  "updatedAt":"ISO-8601",
+  "dueDate":"YYYY-MM-DD|null",       // homework due date (local date)
+  "dueTime":"HH:mm|null",            // optional due time
+  "scheduledDate":"YYYY-MM-DD|null",// when the user scheduled to do it
+  "scheduledTime":"HH:mm|null",
+  "timeZone":"IANA string",          // stored at creation
+  "estimatedMinutes": integer|null,
+  "priority":"low|medium|high|null",
+  "recurrence":{                      // optional
+    "rule":"daily|weekly|monthly|custom",
+    "daysOfWeek":[0..6]             // if weekly
+  },
+  "pomodoroCount": integer,          // completed pomodoros
+  "completed": boolean,
+  "completedAt":"ISO-8601|null",
+  "order": integer                   // within scheduledDate group
+}
+
+
+Notes:
+
+Distinguish dueDate (deadline) from scheduledDate (when user plans to work on it).
+
+type allows life tasks to be treated differently in scheduling.
+
+estimatedMinutes drives simple auto-scheduling.
+
+6 — Priority & ranking algorithm (practical, deterministic)
+
+Compute an urgency score for ordering within groups:
+
+Pseudo:
+
+urgency = basePriority + dueFactor + scheduledFactor - timeLeftFactor + estimateFactor
+
+basePriority: low=0, medium=10, high=25
+dueFactor: if dueDate exists:
+  daysLeft = max(0, differenceInDays(nowLocal, dueDate))
+  dueFactor = max(0, 30 - (daysLeft * 5))   // closer due => higher
+scheduledFactor: if scheduledDate==today => +10
+timeLeftFactor: if scheduledTime exists:
+  minutesLeft = differenceInMinutes(nowLocal, scheduledDate+scheduledTime)
+  timeLeftFactor = clamp(minutesLeft/60, 0, 10)
+estimateFactor: smaller tasks get slight boost: (60 - min(estimatedMinutes, 60))/10
+
+
+Sort descending by urgency. This keeps near-due homework top.
+
+Auto-schedule suggestion (simple greedy)
+
+Input: available time blocks (user indicates “available now” or app looks at day), tasks sorted by urgency, and estimatedMinutes.
+
+Fill earliest available blocks with highest-urgency tasks until filled.
+
+Present suggested blocks to user with accept/decline.
+
+7 — Key flows (as I, end user, will use it)
+
+Capture a homework quickly:
+
+Press N → focus add.
+
+Type “Finish lab report” → TAB to subject → select “Physics 201” → TAB to date → pick due date → Enter to add.
+
+Task appears in Due Today if due soon.
+
+Plan study time:
+
+Click task → Suggest “Schedule 45m” → accepts → creates scheduled slot for Today at 19:00.
+
+Start Pomodoro → work timer runs; pomodoroCount increments upon completion.
+
+Handle missed tasks:
+
+At midnight, tasks re-evaluated; app softly notifies “3 tasks rolled to Today” with Undo available.
+
+Export/import:
+
+Export JSON saved; import validates schema and merges.
+
+8 — Keyboard shortcuts (complete)
+
+Ctrl/Cmd+K or N: focus Quick Add
+
+Ctrl/Cmd+Z: Undo
+
+Ctrl/Cmd+Shift+E: Export
+
+Ctrl/Cmd+Shift+I: Import
+
+Enter (Add input): add task
+
+Shift+Enter (Add): add & keep input open
+
+When task focused:
+
+Space: toggle complete
+
+Enter: inline edit
+
+Ctrl+ArrowUp/Down: reorder within group
+
+P: start Pomodoro for focused task
+
+9 — Accessibility & internationalisation
+
+ARIA live region announces adds/removes politely.
+
+input[type="time"] fallback present; time format follows user locale.
+
+All color tokens meet contrast.
+
+Fully keyboard operable; focus outlines visible.
+
+Date/Time parsing robust to locale; store ISO in DB, keep local display.
+
+10 — Persistence & robustness
+
+IndexedDB primary (idb wrapper); localStorage fallback with same JSON shape key calmplanner.v1.
+
+meta.schemaVersion and migration scripts.
+
+Export includes meta + tasks; import validates and offers append/overwrite choices.
+
+Undo stack persisted partially (last 5 actions) to avoid accidental loss.
+
+11 — Edge cases & rules (as I expect them to behave)
+
+DST: if scheduled time falls into a DST gap, schedule at closest valid local time and record original intention in notes.
+
+Conflicting IDs when importing → regenerate IDs unless user chooses overwrite.
+
+Large import validated; if corrupted, show raw data export option and allow user to wipe safely.
+
+12 — Sample tasks (real examples I would create)
+{
+  "tasks":[
+    {
+      "id":"t1",
+      "title":"Calc assignment 4 — integrals",
+      "type":"homework",
+      "subject":"Math 101",
+      "dueDate":"2025-12-18",
+      "dueTime":"23:59",
+      "estimatedMinutes":120,
+      "priority":"high",
+      "scheduledDate":"2025-12-17",
+      "scheduledTime":"18:00",
+      "pomodoroCount":0,
+      "completed":false
+    },
+    {
+      "id":"t2",
+      "title":"Buy groceries",
+      "type":"life",
+      "subject":null,
+      "estimatedMinutes":30,
+      "scheduledDate":"2025-12-16",
+      "scheduledTime":"19:30",
+      "priority":"medium",
+      "completed":false
+    }
+  ]
+}
+
+13 — Acceptance criteria (I expect these)
+
+Core flows (add, edit, complete, undo, export/import) work offline and persist across reload.
+
+Homework due within 48h surfaces at top automatically.
+
+Pomodoro runs and increments counters.
+
+Keyboard shortcuts functional.
+
+App passes basic accessibility checks (no critical axe violations on main screen).
+
+JSON export validates and re-imports cleanly.
+
+14 — Implementation roadmap (developer view — prioritized)
+
+Scaffold minimal Astro+Solid+Tailwind.
+
+Implement storage wrapper and schema migrations + unit tests.
+
+Build Quick Add and Today group + urgency sort.
+
+Add task detail, schedule UI, date/time handling (date-fns + tz).
+
+Implement Pomodoro/focus mode and undo stack.
+
+Export/Import and sample-data.
+
+Accessibility polish and Playwright tests.
+
+Performance audit and final design polish.
