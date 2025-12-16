@@ -120,14 +120,15 @@ export function NewTaskModal({ isOpen, onClose, defaultDate }: NewTaskModalProps
             className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50"
           />
 
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: 'spring', duration: 0.3 }}
-            onKeyDown={handleKeyDown}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-50"
+          {/* Modal Container - Centered with scroll support */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', duration: 0.3 }}
+              onKeyDown={handleKeyDown}
+              className="w-full max-w-lg my-8"
           >
             <div className="bg-white rounded-2xl shadow-2xl overflow-hidden mx-4">
               {/* Header */}
@@ -265,6 +266,7 @@ export function NewTaskModal({ isOpen, onClose, defaultDate }: NewTaskModalProps
               </form>
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
