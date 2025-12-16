@@ -1,0 +1,385 @@
+---
+// ZenPlan - Landing Page
+// A beautiful, SaaS-grade landing page
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ZenPlan - The modern, local-first task planner that helps you stay organized and focused. Beautiful UI, offline-first, and privacy-focused." />
+    <meta name="theme-color" content="#8b5cf6" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>ZenPlan - Modern Task Planning Made Simple</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="font-sans antialiased bg-slate-50">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="text-xl font-bold bg-gradient-to-r from-violet-600 to-violet-800 bg-clip-text text-transparent">
+              ZenPlan
+            </span>
+          </div>
+          
+          <div class="hidden md:flex items-center gap-8">
+            <a href="#features" class="text-slate-600 hover:text-violet-600 transition-colors">Features</a>
+            <a href="#how-it-works" class="text-slate-600 hover:text-violet-600 transition-colors">How it Works</a>
+            <a href="#pricing" class="text-slate-600 hover:text-violet-600 transition-colors">Pricing</a>
+          </div>
+          
+          <div class="flex items-center gap-3">
+            <a href="/setup" class="text-slate-600 hover:text-violet-600 font-medium transition-colors">
+              Sign In
+            </a>
+            <a href="/setup" class="px-4 py-2 rounded-xl bg-gradient-to-r from-violet-500 to-violet-600 text-white font-medium shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all hover:-translate-y-0.5">
+              Get Started Free
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 overflow-hidden">
+      <!-- Background decorations -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-violet-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse animation-delay-200"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+      </div>
+      
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-4xl mx-auto">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 text-violet-700 text-sm font-medium mb-6">
+            <span class="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></span>
+            Now with AI-powered task suggestions
+          </div>
+          
+          <!-- Headline -->
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-tight mb-6">
+            Plan your day with
+            <span class="bg-gradient-to-r from-violet-600 via-violet-500 to-emerald-500 bg-clip-text text-transparent">
+              clarity & zen
+            </span>
+          </h1>
+          
+          <!-- Subheadline -->
+          <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-10">
+            The beautifully simple task planner that works offline, respects your privacy, 
+            and helps you focus on what truly matters. No subscriptions, no cloud dependency.
+          </p>
+          
+          <!-- CTAs -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <a href="/setup" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-violet-500 to-violet-600 text-white font-semibold text-lg shadow-xl shadow-violet-500/30 hover:shadow-violet-500/50 transition-all hover:-translate-y-1">
+              Start Planning Free
+            </a>
+            <a href="#features" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white border-2 border-slate-200 text-slate-700 font-semibold text-lg hover:border-violet-300 hover:bg-violet-50 transition-all">
+              See How It Works
+            </a>
+          </div>
+          
+          <!-- Hero Image/Preview -->
+          <div class="relative max-w-5xl mx-auto">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-50 to-transparent z-10 pointer-events-none"></div>
+            <div class="relative rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/20 border border-slate-200/50">
+              <div class="aspect-[16/10] bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                <!-- App Preview Mock -->
+                <div class="w-full h-full p-4 sm:p-6 lg:p-8">
+                  <div class="w-full h-full bg-white rounded-xl shadow-lg p-4 overflow-hidden">
+                    <!-- Mock header -->
+                    <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-100">
+                      <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-lg bg-violet-500"></div>
+                        <div class="h-4 w-24 bg-slate-200 rounded"></div>
+                      </div>
+                      <div class="flex gap-2">
+                        <div class="h-8 w-20 bg-slate-100 rounded-lg"></div>
+                        <div class="h-8 w-20 bg-slate-100 rounded-lg"></div>
+                        <div class="h-8 w-8 bg-violet-100 rounded-lg"></div>
+                      </div>
+                    </div>
+                    <!-- Mock columns -->
+                    <div class="grid grid-cols-7 gap-3">
+                      {[...Array(7)].map((_, i) => (
+                        <div class="bg-slate-50 rounded-xl p-3 space-y-2">
+                          <div class="h-10 bg-slate-200/50 rounded-lg flex items-center justify-center">
+                            <div class="w-6 h-6 rounded bg-violet-100"></div>
+                          </div>
+                          {[...Array(3 - (i % 2))].map(() => (
+                            <div class="h-16 bg-white rounded-lg border-l-4 border-violet-400 shadow-sm"></div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="py-12 bg-white border-y border-slate-200/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p class="text-center text-slate-500 mb-8">Trusted by productive teams worldwide</p>
+        <div class="flex flex-wrap items-center justify-center gap-8 sm:gap-16 opacity-60 grayscale">
+          <div class="text-2xl font-bold text-slate-400">Acme Inc</div>
+          <div class="text-2xl font-bold text-slate-400">TechCorp</div>
+          <div class="text-2xl font-bold text-slate-400">StartupXYZ</div>
+          <div class="text-2xl font-bold text-slate-400">DesignCo</div>
+          <div class="text-2xl font-bold text-slate-400">DevHub</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-gradient-to-b from-white to-slate-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="text-violet-600 font-semibold">Features</span>
+          <h2 class="text-4xl font-bold text-slate-900 mt-2 mb-4">
+            Everything you need to stay organized
+          </h2>
+          <p class="text-lg text-slate-600">
+            Powerful features designed to help you manage tasks effortlessly and maintain your focus throughout the day.
+          </p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Feature 1 -->
+          <div class="group p-6 bg-white rounded-2xl border border-slate-200/50 shadow-sm hover:shadow-xl hover:border-violet-200 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Drag & Drop Planning</h3>
+            <p class="text-slate-600">Easily organize your tasks by dragging them between days. Intuitive and satisfying to use.</p>
+          </div>
+          
+          <!-- Feature 2 -->
+          <div class="group p-6 bg-white rounded-2xl border border-slate-200/50 shadow-sm hover:shadow-xl hover:border-violet-200 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Offline First</h3>
+            <p class="text-slate-600">Works completely offline. Your data stays on your device, always accessible without internet.</p>
+          </div>
+          
+          <!-- Feature 3 -->
+          <div class="group p-6 bg-white rounded-2xl border border-slate-200/50 shadow-sm hover:shadow-xl hover:border-violet-200 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Privacy Focused</h3>
+            <p class="text-slate-600">No accounts required. No data sent to servers. Your planning stays private, always.</p>
+          </div>
+          
+          <!-- Feature 4 -->
+          <div class="group p-6 bg-white rounded-2xl border border-slate-200/50 shadow-sm hover:shadow-xl hover:border-violet-200 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Beautiful Design</h3>
+            <p class="text-slate-600">Modern, clean interface with smooth animations that make planning feel delightful.</p>
+          </div>
+          
+          <!-- Feature 5 -->
+          <div class="group p-6 bg-white rounded-2xl border border-slate-200/50 shadow-sm hover:shadow-xl hover:border-violet-200 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Multiple Views</h3>
+            <p class="text-slate-600">Switch between daily, weekly, and monthly views to see your tasks the way you prefer.</p>
+          </div>
+          
+          <!-- Feature 6 -->
+          <div class="group p-6 bg-white rounded-2xl border border-slate-200/50 shadow-sm hover:shadow-xl hover:border-violet-200 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Instant & Fast</h3>
+            <p class="text-slate-600">Built for speed. Tasks update instantly with zero loading times or delays.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 bg-slate-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="text-violet-600 font-semibold">How It Works</span>
+          <h2 class="text-4xl font-bold text-slate-900 mt-2 mb-4">
+            Get started in seconds
+          </h2>
+          <p class="text-lg text-slate-600">
+            No complex setup, no learning curve. Just open and start planning.
+          </p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-2xl bg-violet-600 text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-500/30">
+              1
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Open ZenPlan</h3>
+            <p class="text-slate-600">Just visit the app in your browser. No downloads or installations needed.</p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-2xl bg-violet-600 text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-500/30">
+              2
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Add Your Tasks</h3>
+            <p class="text-slate-600">Click to add tasks with priorities and due dates. It's quick and intuitive.</p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-2xl bg-violet-600 text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-500/30">
+              3
+            </div>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">Stay Organized</h3>
+            <p class="text-slate-600">Drag tasks between days, mark them complete, and watch your progress.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="text-violet-600 font-semibold">Pricing</span>
+          <h2 class="text-4xl font-bold text-slate-900 mt-2 mb-4">
+            Free forever. Really.
+          </h2>
+          <p class="text-lg text-slate-600">
+            ZenPlan is completely free with no hidden costs. We believe in making productivity accessible to everyone.
+          </p>
+        </div>
+        
+        <div class="max-w-lg mx-auto">
+          <div class="p-8 bg-gradient-to-br from-violet-500 to-violet-600 rounded-3xl shadow-2xl shadow-violet-500/30 text-white text-center">
+            <div class="inline-block px-4 py-1 rounded-full bg-white/20 text-sm font-medium mb-4">
+              Most Popular
+            </div>
+            <h3 class="text-3xl font-bold mb-2">Free Plan</h3>
+            <div class="flex items-baseline justify-center gap-1 mb-6">
+              <span class="text-5xl font-bold">$0</span>
+              <span class="text-violet-200">/forever</span>
+            </div>
+            <ul class="space-y-3 text-left mb-8">
+              <li class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Unlimited tasks
+              </li>
+              <li class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Daily, weekly & monthly views
+              </li>
+              <li class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Drag & drop scheduling
+              </li>
+              <li class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Works offline
+              </li>
+              <li class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                100% privacy - data stays local
+              </li>
+            </ul>
+            <a href="/setup" class="block w-full py-4 rounded-2xl bg-white text-violet-600 font-semibold hover:bg-violet-50 transition-colors">
+              Get Started Now
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-gradient-to-br from-violet-600 to-violet-700 relative overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+      </div>
+      
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl sm:text-5xl font-bold text-white mb-6">
+          Ready to plan with peace of mind?
+        </h2>
+        <p class="text-xl text-violet-200 max-w-2xl mx-auto mb-10">
+          Join thousands of users who have found their zen with our simple, beautiful task planner.
+        </p>
+        <a href="/setup" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-violet-600 font-semibold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
+          Start Planning Free
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-slate-900 text-slate-400">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="text-lg font-bold text-white">ZenPlan</span>
+          </div>
+          
+          <div class="flex items-center gap-6 text-sm">
+            <a href="#" class="hover:text-white transition-colors">Privacy</a>
+            <a href="#" class="hover:text-white transition-colors">Terms</a>
+            <a href="#" class="hover:text-white transition-colors">Support</a>
+          </div>
+          
+          <p class="text-sm">© 2024 ZenPlan. Made with ❤️ for productivity lovers.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
