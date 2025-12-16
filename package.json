@@ -1,0 +1,34 @@
+{
+  "name": "planner",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A calm, offline-first homework & life planner",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/solid-js": "^5.0.0",
+    "@astrojs/tailwind": "^6.0.0",
+    "astro": "^5.0.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "solid-js": "^1.9.3",
+    "tailwindcss": "^3.4.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/uuid": "^10.0.0",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
