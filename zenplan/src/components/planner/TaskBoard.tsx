@@ -7,12 +7,13 @@ import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Calendar, ChevronLeft, ChevronRight, LayoutGrid, List, CalendarDays, Plus, Search, Settings, Bell, Command, Focus } from 'lucide-react';
 
-import { db, updateTask, toggleTaskStatus, deleteTask } from '../../lib/db';
+import { db, updateTask, toggleTaskStatus, deleteTask, exportAllData } from '../../lib/db';
 import type { Task, ViewMode } from '../../types';
 import { Column } from './Column';
 import { NewTaskModal } from './NewTaskModal';
 import { TaskCard } from './TaskCard';
-import { ThemeToggle } from '../ui/ThemeToggle';
+import { ThemeToggle, CommandPalette } from '../ui';
+import { saveTheme, applyTheme } from '../../lib/theme';
 
 const cn = (...inputs: (string | undefined | false)[]) => twMerge(clsx(inputs));
 
@@ -24,6 +25,7 @@ export function TaskBoard() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [focusMode, setFocusMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   // Reactive query for all tasks - updates automatically when DB changes
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) ?? [];
@@ -141,28 +143,87 @@ export function TaskBoard() {
   const completedTasks = tasks.filter(t => t.status === 'done').length;
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
+  // Handle command palette actions
+  const handleCommandAction = async (actionId: string) => {
+    switch (actionId) {
+      case 'new-task':
+        openNewTaskModal();
+        break;
+      case 'focus-mode':
+        setFocusMode(!focusMode);
+        break;
+      case 'view-day':
+        setViewMode('daily');
+        break;
+      case 'view-week':
+        setViewMode('weekly');
+        break;
+      case 'view-month':
+        setViewMode('monthly');
+        break;
+      case 'theme-light':
+        applyTheme('light');
+        await saveTheme('light');
+        break;
+      case 'theme-dark':
+        applyTheme('dark');
+        await saveTheme('dark');
+        break;
+      case 'export-data':
+        try {
+          const data = await exportAllData();
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `zenplan-backup-${new Date().toISOString().split('T')[0]}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        } catch (error) {
+          console.error('Failed to export data:', error);
+        }
+        break;
+    }
+  };
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger shortcuts when typing in inputs
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        // Only allow Escape to close modals
+        if (e.key === 'Escape') {
+          setIsCommandPaletteOpen(false);
+          setFocusMode(false);
+        }
+        return;
+      }
+
       // Cmd/Ctrl + N: New task
       if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
         e.preventDefault();
         openNewTaskModal();
       }
-      // Cmd/Ctrl + K: Command palette (placeholder)
+      // Cmd/Ctrl + K: Command palette
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        // TODO: Open command palette
+        setIsCommandPaletteOpen(true);
       }
-      // Escape: Exit focus mode
-      if (e.key === 'Escape' && focusMode) {
-        setFocusMode(false);
+      // Escape: Close things
+      if (e.key === 'Escape') {
+        if (isCommandPaletteOpen) {
+          setIsCommandPaletteOpen(false);
+        } else if (focusMode) {
+          setFocusMode(false);
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [focusMode]);
+  }, [focusMode, isCommandPaletteOpen]);
 
   return (
     <div className={cn(
@@ -170,6 +231,13 @@ export function TaskBoard() {
       "bg-bg-primary",
       focusMode && "bg-bg-secondary"
     )}>
+      {/* Command Palette */}
+      <CommandPalette 
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onAction={handleCommandAction}
+      />
+
       {/* Top Navigation Bar */}
       <header className={cn(
         "sticky top-0 z-40 glass border-b border-surface-border-subtle",
