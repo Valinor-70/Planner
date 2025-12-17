@@ -1,6 +1,8 @@
 ---
 // ZenPlan - Setup/Onboarding Page
 import '../styles/global.css';
+import { OnboardingWizard } from '../components/onboarding/OnboardingWizard';
+import { themeInitScript } from '../lib/theme-init';
 ---
 
 <!doctype html>
@@ -16,265 +18,21 @@ import '../styles/global.css';
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  </head>
-  <body class="font-sans antialiased bg-gradient-to-br from-slate-50 via-violet-50/30 to-slate-100 min-h-screen">
-    <div class="min-h-screen flex">
-      <!-- Left Panel - Branding -->
-      <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-violet-600 to-violet-700 relative overflow-hidden">
-        <!-- Background decorations -->
-        <div class="absolute inset-0">
-          <div class="absolute -top-40 -left-40 w-80 h-80 bg-violet-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
-          <div class="absolute -bottom-40 -right-40 w-80 h-80 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-violet-400 rounded-full mix-blend-multiply filter blur-3xl opacity-40"></div>
-        </div>
-        
-        <div class="relative flex flex-col justify-center px-12 py-16 text-white">
-          <!-- Logo -->
-          <div class="flex items-center gap-3 mb-12">
-            <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <span class="text-2xl font-bold">ZenPlan</span>
-          </div>
-          
-          <!-- Headline -->
-          <h1 class="text-4xl font-bold mb-6 leading-tight">
-            Your personal planning<br />
-            sanctuary awaits
-          </h1>
-          
-          <p class="text-lg text-violet-200 mb-12 max-w-md">
-            Set up your workspace in less than a minute. No account required - everything stays private on your device.
-          </p>
-          
-          <!-- Features list -->
-          <div class="space-y-4">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span class="text-violet-100">Works completely offline</span>
-            </div>
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span class="text-violet-100">Data stays on your device</span>
-            </div>
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span class="text-violet-100">Ready in under 60 seconds</span>
-            </div>
-          </div>
-          
-          <!-- Quote -->
-          <div class="mt-16 pt-8 border-t border-white/20">
-            <blockquote class="text-lg text-violet-100 italic mb-4">
-              "ZenPlan helped me regain control of my day. The simplicity is refreshing."
-            </blockquote>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-white/20"></div>
-              <div>
-                <p class="font-medium">Sarah Chen</p>
-                <p class="text-sm text-violet-200">Product Designer</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Right Panel - Setup Form -->
-      <div class="flex-1 flex items-center justify-center p-6 lg:p-12">
-        <div class="w-full max-w-md">
-          <!-- Mobile Logo -->
-          <div class="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <span class="text-xl font-bold bg-gradient-to-r from-violet-600 to-violet-800 bg-clip-text text-transparent">ZenPlan</span>
-          </div>
-          
-          <!-- Setup Card -->
-          <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8">
-            <div class="text-center mb-8">
-              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-100 to-violet-200 text-violet-600 flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-              </div>
-              <h2 class="text-2xl font-bold text-slate-900 mb-2">Welcome to ZenPlan</h2>
-              <p class="text-slate-600">Let's personalize your planning experience</p>
-            </div>
-            
-            <form id="setup-form" class="space-y-6">
-              <!-- Name Input -->
-              <div>
-                <label for="name" class="block text-sm font-medium text-slate-700 mb-2">
-                  What should we call you?
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Enter your name"
-                  class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500 transition-all"
-                />
-              </div>
-              
-              <!-- Week Start -->
-              <div>
-                <label for="week-start" class="block text-sm font-medium text-slate-700 mb-2">
-                  When does your week start?
-                </label>
-                <div class="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    data-value="monday"
-                    class="week-start-btn px-4 py-3 rounded-xl border-2 border-violet-500 bg-violet-50 text-violet-700 font-medium transition-all"
-                  >
-                    Monday
-                  </button>
-                  <button
-                    type="button"
-                    data-value="sunday"
-                    class="week-start-btn px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-600 font-medium hover:border-slate-300 transition-all"
-                  >
-                    Sunday
-                  </button>
-                </div>
-              </div>
-              
-              <!-- Theme Selection -->
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">
-                  Choose your theme
-                </label>
-                <div class="grid grid-cols-3 gap-3">
-                  <button
-                    type="button"
-                    data-theme="light"
-                    class="theme-btn group p-4 rounded-xl border-2 border-violet-500 bg-white transition-all"
-                  >
-                    <div class="w-full aspect-square rounded-lg bg-gradient-to-br from-slate-100 to-white border border-slate-200 mb-2"></div>
-                    <span class="text-sm font-medium text-slate-700">Light</span>
-                  </button>
-                  <button
-                    type="button"
-                    data-theme="dark"
-                    class="theme-btn group p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 transition-all"
-                  >
-                    <div class="w-full aspect-square rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 mb-2"></div>
-                    <span class="text-sm font-medium text-slate-700">Dark</span>
-                  </button>
-                  <button
-                    type="button"
-                    data-theme="auto"
-                    class="theme-btn group p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 transition-all"
-                  >
-                    <div class="w-full aspect-square rounded-lg bg-gradient-to-br from-slate-100 via-slate-400 to-slate-800 mb-2"></div>
-                    <span class="text-sm font-medium text-slate-700">Auto</span>
-                  </button>
-                </div>
-              </div>
-              
-              <!-- Submit Button -->
-              <button
-                type="submit"
-                class="w-full py-4 rounded-xl bg-gradient-to-r from-violet-500 to-violet-600 text-white font-semibold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all hover:-translate-y-0.5"
-              >
-                Launch My Planner
-              </button>
-              
-              <!-- Skip Link -->
-              <p class="text-center text-sm text-slate-500">
-                <a href="/dashboard" class="text-violet-600 hover:text-violet-700 font-medium">
-                  Skip setup and go to dashboard →
-                </a>
-              </p>
-            </form>
-          </div>
-          
-          <!-- Trust Indicators -->
-          <div class="mt-8 flex items-center justify-center gap-6 text-sm text-slate-500">
-            <div class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>100% Free</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <span>Private</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
-              <span>No Sign-up</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     
-    <script>
-      // Handle week start selection
-      document.querySelectorAll('.week-start-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.week-start-btn').forEach(b => {
-            b.classList.remove('border-violet-500', 'bg-violet-50', 'text-violet-700');
-            b.classList.add('border-slate-200', 'bg-white', 'text-slate-600');
-          });
-          btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-600');
-          btn.classList.add('border-violet-500', 'bg-violet-50', 'text-violet-700');
-        });
-      });
-      
-      // Handle theme selection
-      document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.theme-btn').forEach(b => {
-            b.classList.remove('border-violet-500');
-            b.classList.add('border-slate-200');
-          });
-          btn.classList.remove('border-slate-200');
-          btn.classList.add('border-violet-500');
-        });
-      });
-      
-      // Handle form submission
-      document.getElementById('setup-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const name = (document.getElementById('name') as HTMLInputElement)?.value || 'User';
-        const weekStart = document.querySelector('.week-start-btn.border-violet-500')?.getAttribute('data-value') || 'monday';
-        const theme = document.querySelector('.theme-btn.border-violet-500')?.getAttribute('data-theme') || 'light';
-        
-        // Save preferences to localStorage
-        localStorage.setItem('zenplan_user', JSON.stringify({
-          name,
-          weekStart,
-          theme,
-          setupComplete: true
-        }));
-        
-        // Navigate to dashboard
-        window.location.href = '/dashboard';
-      });
-    </script>
+    <!-- Theme initialization script - prevents flash -->
+    <script set:html={themeInitScript} />
+  </head>
+  <body class="font-sans antialiased">
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <div id="main-content">
+      <OnboardingWizard 
+        client:only="react"
+        onComplete={() => {
+          window.location.href = '/dashboard';
+        }}
+      />
+    </div>
   </body>
 </html>
