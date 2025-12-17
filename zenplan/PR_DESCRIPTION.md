@@ -75,6 +75,9 @@ Beautiful 3-step wizard for new users:
 ### Command Palette
 ![Command Palette](https://github.com/user-attachments/assets/805f4b9c-b88b-4426-950f-99e5b449c41e)
 
+### Onboarding Wizard
+![Onboarding](https://github.com/user-attachments/assets/411a93ae-f1c9-4a55-a287-a71123290af4)
+
 ## Technical Implementation
 
 ### Architecture
