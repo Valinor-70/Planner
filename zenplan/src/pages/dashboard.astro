@@ -5,6 +5,7 @@
 
 import '../styles/global.css';
 import { TaskBoard } from '../components/planner/TaskBoard';
+import { themeInitScript } from '../lib/theme-init';
 ---
 
 <!doctype html>
@@ -21,13 +22,21 @@ import { TaskBoard } from '../components/planner/TaskBoard';
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Theme initialization script - prevents flash -->
+    <script set:html={themeInitScript} />
   </head>
   <body class="font-sans antialiased">
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
     <!-- 
       CRITICAL: Using client:only="react" directive 
       This ensures Dexie (IndexedDB) code only runs on the client
       Prevents SSR errors from accessing browser-only APIs
     -->
-    <TaskBoard client:only="react" />
+    <div id="main-content">
+      <TaskBoard client:only="react" />
+    </div>
   </body>
 </html>
