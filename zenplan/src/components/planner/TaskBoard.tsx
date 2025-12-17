@@ -1,17 +1,19 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { DndContext, closestCenter, DragOverlay } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { format, addDays, startOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, subDays } from 'date-fns';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Calendar, ChevronLeft, ChevronRight, LayoutGrid, List, CalendarDays, Plus, Search, Settings, Bell } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, LayoutGrid, List, CalendarDays, Plus, Search, Settings, Bell, Command, Focus } from 'lucide-react';
 
-import { db, updateTask, toggleTaskStatus, deleteTask } from '../../lib/db';
+import { db, updateTask, toggleTaskStatus, deleteTask, exportAllData } from '../../lib/db';
 import type { Task, ViewMode } from '../../types';
 import { Column } from './Column';
 import { NewTaskModal } from './NewTaskModal';
 import { TaskCard } from './TaskCard';
+import { ThemeToggle, CommandPalette } from '../ui';
+import { saveTheme, applyTheme } from '../../lib/theme';
 
 const cn = (...inputs: (string | undefined | false)[]) => twMerge(clsx(inputs));
 
@@ -21,6 +23,9 @@ export function TaskBoard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [focusMode, setFocusMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   // Reactive query for all tasks - updates automatically when DB changes
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) ?? [];
@@ -138,18 +143,119 @@ export function TaskBoard() {
   const completedTasks = tasks.filter(t => t.status === 'done').length;
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
+  // Handle command palette actions
+  const handleCommandAction = async (actionId: string) => {
+    switch (actionId) {
+      case 'new-task':
+        openNewTaskModal();
+        break;
+      case 'new-note':
+        // Notes feature - for now, show a notification or redirect to notes when implemented
+        // TODO: Implement notes modal when Notes UI is complete
+        console.log('Notes feature coming soon');
+        break;
+      case 'focus-mode':
+        setFocusMode(!focusMode);
+        break;
+      case 'view-day':
+        setViewMode('daily');
+        break;
+      case 'view-week':
+        setViewMode('weekly');
+        break;
+      case 'view-month':
+        setViewMode('monthly');
+        break;
+      case 'theme-light':
+        applyTheme('light');
+        await saveTheme('light');
+        break;
+      case 'theme-dark':
+        applyTheme('dark');
+        await saveTheme('dark');
+        break;
+      case 'export-data':
+        try {
+          const data = await exportAllData();
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `zenplan-backup-${new Date().toISOString().split('T')[0]}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        } catch (error) {
+          console.error('Failed to export data:', error);
+        }
+        break;
+    }
+  };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger shortcuts when typing in inputs
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        // Only allow Escape to close modals
+        if (e.key === 'Escape') {
+          setIsCommandPaletteOpen(false);
+          setFocusMode(false);
+        }
+        return;
+      }
+
+      // Cmd/Ctrl + N: New task
+      if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+        e.preventDefault();
+        openNewTaskModal();
+      }
+      // Cmd/Ctrl + K: Command palette
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(true);
+      }
+      // Escape: Close things
+      if (e.key === 'Escape') {
+        if (isCommandPaletteOpen) {
+          setIsCommandPaletteOpen(false);
+        } else if (focusMode) {
+          setFocusMode(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [focusMode, isCommandPaletteOpen]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-slate-100">
+    <div className={cn(
+      "min-h-screen transition-colors duration-normal",
+      "bg-bg-primary",
+      focusMode && "bg-bg-secondary"
+    )}>
+      {/* Command Palette */}
+      <CommandPalette 
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onAction={handleCommandAction}
+      />
+
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+      <header className={cn(
+        "sticky top-0 z-40 glass border-b border-surface-border-subtle",
+        focusMode && "opacity-0 pointer-events-none"
+      )}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-violet-600 to-violet-800 bg-clip-text text-transparent">
+              <span className="text-xl font-bold gradient-text">
                 ZenPlan
               </span>
             </div>
@@ -157,24 +263,44 @@ export function TaskBoard() {
             {/* Search Bar */}
             <div className="hidden md:flex flex-1 max-w-md mx-8">
               <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input
                   type="text"
-                  placeholder="Search tasks..."
-                  className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-100 border-0 focus:ring-2 focus:ring-violet-500/50 text-sm"
+                  placeholder="Search tasks... (⌘K)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="input pl-10 py-2 text-sm"
                 />
               </div>
             </div>
 
             {/* Right Actions */}
             <div className="flex items-center gap-2">
-              <button className="p-2 rounded-lg hover:bg-slate-100 text-slate-500">
+              {/* Focus Mode Toggle */}
+              <button 
+                onClick={() => setFocusMode(!focusMode)}
+                className={cn(
+                  "p-2 rounded-lg transition-all",
+                  focusMode 
+                    ? "bg-primary-100 text-primary-600" 
+                    : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-text-secondary"
+                )}
+                aria-label={focusMode ? "Exit focus mode" : "Enter focus mode"}
+                title="Focus Mode"
+              >
+                <Focus className="w-5 h-5" />
+              </button>
+              
+              {/* Theme Toggle */}
+              <ThemeToggle />
+              
+              <button className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 text-text-secondary">
                 <Bell className="w-5 h-5" />
               </button>
-              <button className="p-2 rounded-lg hover:bg-slate-100 text-slate-500">
+              <a href="/settings" className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 text-text-secondary">
                 <Settings className="w-5 h-5" />
-              </button>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center text-white text-sm font-medium">
+              </a>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-sm font-medium">
                 U
               </div>
             </div>
@@ -182,64 +308,88 @@ export function TaskBoard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className={cn(
+        "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6",
+        focusMode && "pt-16"
+      )}>
+        {/* Focus Mode Header */}
+        {focusMode && (
+          <div className="fixed top-4 right-4 z-50">
+            <button
+              onClick={() => setFocusMode(false)}
+              className="btn-secondary text-sm"
+            >
+              Exit Focus Mode (Esc)
+            </button>
+          </div>
+        )}
+
         {/* Dashboard Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">
+            <h1 className="text-2xl font-bold text-text-primary">
               {viewMode === 'daily' && format(currentDate, 'EEEE, MMMM d')}
               {viewMode === 'weekly' && `Week of ${format(startOfWeek(currentDate, { weekStartsOn: 1 }), 'MMM d')}`}
               {viewMode === 'monthly' && format(currentDate, 'MMMM yyyy')}
             </h1>
-            <p className="text-slate-500 mt-1">
+            <p className="text-text-secondary mt-1">
               {completedTasks} of {totalTasks} tasks completed ({completionRate}%)
             </p>
           </div>
 
           <button
             onClick={openNewTaskModal}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-violet-600 text-white font-medium shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all hover:-translate-y-0.5"
+            className="btn-primary"
           >
             <Plus className="w-5 h-5" />
             New Task
+            <kbd className="hidden sm:inline-flex ml-2 px-1.5 py-0.5 text-xs bg-white/20 rounded">⌘N</kbd>
           </button>
         </div>
 
         {/* Controls Bar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 p-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-slate-200/50">
+        <div className={cn(
+          "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 p-4 rounded-2xl",
+          "glass",
+          focusMode && "hidden"
+        )}>
           {/* Navigation */}
           <div className="flex items-center gap-2">
             <button
               onClick={goToPrevious}
-              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+              className="btn-ghost p-2"
+              aria-label="Previous period"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={goToToday}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium text-violet-600 hover:bg-violet-100 transition-colors"
+              className="px-3 py-1.5 rounded-lg text-sm font-medium text-primary-600 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
             >
               Today
             </button>
             <button
               onClick={goToNext}
-              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+              className="btn-ghost p-2"
+              aria-label="Next period"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
 
           {/* View Mode Switcher */}
-          <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl">
+          <div className="flex items-center gap-1 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl" role="tablist">
             {viewModes.map(({ mode, icon: Icon, label }) => (
               <button
                 key={mode}
                 onClick={() => setViewMode(mode)}
+                role="tab"
+                aria-selected={viewMode === mode}
                 className={cn(
                   'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
                   viewMode === mode
-                    ? 'bg-white text-violet-600 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-surface-primary text-primary-600 shadow-sm'
+                    : 'text-text-secondary hover:text-text-primary'
                 )}
               >
                 <Icon className="w-4 h-4" />
