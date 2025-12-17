@@ -183,10 +183,25 @@ export function SettingsPage() {
     }
   };
 
-  // Handle avatar upload
+  // Handle avatar upload with file size validation
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Validate file size (max 2MB)
+    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
+    if (file.size > MAX_FILE_SIZE) {
+      setSaveMessage('File too large. Max 2MB allowed.');
+      setTimeout(() => setSaveMessage(null), 3000);
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setSaveMessage('Invalid file type. Please upload an image.');
+      setTimeout(() => setSaveMessage(null), 3000);
+      return;
+    }
 
     // Read file as base64
     const reader = new FileReader();

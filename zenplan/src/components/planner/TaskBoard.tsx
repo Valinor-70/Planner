@@ -149,6 +149,11 @@ export function TaskBoard() {
       case 'new-task':
         openNewTaskModal();
         break;
+      case 'new-note':
+        // Notes feature - for now, show a notification or redirect to notes when implemented
+        // TODO: Implement notes modal when Notes UI is complete
+        console.log('Notes feature coming soon');
+        break;
       case 'focus-mode':
         setFocusMode(!focusMode);
         break;
